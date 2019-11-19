@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Noto Sans CJK JP Medium";
+  src: url("~@static/fonts/NotoSansCJKJP/NotoSansCJKjp-Medium.otf")
+    format("opentype");
+}
+
+body {
+  font-family: "Noto Sans CJK JP Medium" !important;
+}

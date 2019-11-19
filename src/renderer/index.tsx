@@ -7,19 +7,17 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Button from "@material-ui/core/Button";
 
+require("./styles.css");
+
 class App extends React.Component {
   render() {
     return (
       <div>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-        />
         <Button variant="contained" color="primary">
-          Hello World
+          こんにちは！
         </Button>
-        <p> Running? </p>
-        <p> Hello React!</p>
+        <p> こんばんは！ </p>
+        <p> おはようございます！ </p>
       </div>
     );
   }
