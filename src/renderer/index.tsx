@@ -5,7 +5,11 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import Button from "@material-ui/core/Button";
+import { Button, Grid } from "@material-ui/core/";
+
+import Entries from "./components/Entries/Entries";
+import Seats from "./components/Seats/Seats";
+import Settings from "./components/Settings/Settings";
 
 require("./styles.css");
 
@@ -13,11 +17,17 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Button variant="contained" color="primary">
-          こんにちは！
-        </Button>
-        <p> こんばんは！ </p>
-        <p> おはようございます！ </p>
+        <Grid
+          container
+          direction="row"
+          justify="center"
+          alignItems="center"
+          spacing={3}
+        >
+          <Entries />
+          <Seats />
+          <Settings />
+        </Grid>
       </div>
     );
   }
