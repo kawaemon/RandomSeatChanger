@@ -8,7 +8,7 @@ import * as ReactDOM from "react-dom";
 import { Grid } from "@material-ui/core/";
 
 import Entries from "./components/Entries/Entries";
-import Seats from "./components/Seats/Seats";
+import * as SeatComponent from "./components/Seats/Seats";
 import Settings from "./components/Settings/Settings";
 
 require("./styles.css");
@@ -25,7 +25,7 @@ class App extends React.Component {
           spacing={3}
         >
           <Grid item><Entries /></Grid>
-          <Grid item><Seats /></Grid>
+          <Grid item><SeatComponent.seats /></Grid>
           <Grid item><Settings /></Grid>
         </Grid>
       </div>
