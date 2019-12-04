@@ -5,7 +5,7 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Button, Grid } from "@material-ui/core/";
+import { Grid } from "@material-ui/core/";
 
 import Entries from "./components/Entries/Entries";
 import Seats from "./components/Seats/Seats";
@@ -24,9 +24,9 @@ class App extends React.Component {
           alignItems="center"
           spacing={3}
         >
-          <Entries />
-          <Seats />
-          <Settings />
+          <Grid item><Entries /></Grid>
+          <Grid item><Seats /></Grid>
+          <Grid item><Settings /></Grid>
         </Grid>
       </div>
     );
