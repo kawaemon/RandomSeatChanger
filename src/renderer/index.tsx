@@ -17,8 +17,8 @@ require("./SetFonts.css");
 
 function App() {
   const MainPaperStyle = Styles.MainPaperStyle();
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(5);
+  const [height, setHeight] = useState(5);
 
   return (
     <div>
@@ -31,12 +31,12 @@ function App() {
       >
         <Grid item>
           <Paper className={MainPaperStyle.root}>
-            <SeatComponent.seats width={width} height={6} />
+            <SeatComponent.seats width={width} height={height} />
           </Paper>
         </Grid>
         <Grid item>
           <Paper className={MainPaperStyle.root}>
-            <SettingsComponent.settings onWidthChange={setWidth} />
+            <SettingsComponent.settings onWidthChange={setWidth} onHeightChange={setHeight} />
           </Paper>
         </Grid>
       </Grid>

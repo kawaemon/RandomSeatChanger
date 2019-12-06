@@ -6,8 +6,11 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 
 export const SliderStyle = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            width: "40vw",
+        slider: {
+            width: "35vw",
+        },
+        input: {
+            width: "5vw"
         }
     })
 )
