@@ -3,8 +3,8 @@ const path = require("path");
 module.exports = {
     optimization: {
         splitChunks: {
-            name: "vendor",
-            chunks: "initial",
+            name: "library",
+            chunks: "initial"
         }
     },
     resolve: {
@@ -12,4 +12,4 @@ module.exports = {
             "@static": path.resolve(__dirname, "static")
         }
     }
-}
+};

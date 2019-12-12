@@ -11,9 +11,9 @@ import { Grid, Paper } from "@material-ui/core/";
 import * as SeatComponent from "./components/Seats/Seats";
 import * as SettingsComponent from "./components/Settings/Settings";
 
-import * as Styles from "./Styles"
+import * as Styles from "./Styles";
 
-require("./SetFonts.css");
+require("./Global.css");
 
 function App() {
   const MainPaperStyle = Styles.MainPaperStyle();
@@ -21,7 +21,7 @@ function App() {
   const [height, setHeight] = useState(5);
 
   return (
-    <div>
+    <div style={Styles.BodyStyle}>
       <Grid
         container
         direction="row"
@@ -36,7 +36,10 @@ function App() {
         </Grid>
         <Grid item>
           <Paper className={MainPaperStyle.root}>
-            <SettingsComponent.settings onWidthChange={setWidth} onHeightChange={setHeight} />
+            <SettingsComponent.settings
+              onWidthChange={setWidth}
+              onHeightChange={setHeight}
+            />
           </Paper>
         </Grid>
       </Grid>
@@ -46,7 +49,8 @@ function App() {
 
 let meta = document.createElement("meta");
 meta.name = "viewport";
-meta.content = "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1, user-scalable=no";
+meta.content =
+  "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1, user-scalable=no";
 
 document.head.appendChild(meta);
 ReactDOM.render(<App />, document.getElementById("app"));

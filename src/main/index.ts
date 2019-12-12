@@ -12,7 +12,8 @@ app.commandLine.appendSwitch("lang", "ja");
 
 function createMainWindow() {
   const window = new BrowserWindow({
-    webPreferences: { nodeIntegration: true }
+    webPreferences: { nodeIntegration: true },
+    title: "席替え"
   });
 
   if (isDevelopment) {

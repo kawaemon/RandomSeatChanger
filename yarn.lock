@@ -2719,7 +2719,7 @@ ejs@^2.6.2:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.7.4.tgz#48661287573dcc53e366c7a1ae52c3a120eec9ba"
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
-electron-builder@^21.0.11:
+electron-builder@^21.2.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-21.2.0.tgz#b68ec4def713fc0b8602654ce842f972432f50c5"
   integrity sha512-x8EXrqFbAb2L3N22YlGar3dGh8vwptbB3ovo3OF6K7NTpcsmM2zEoJv7GhFyX73rNzSG2HaWpXwGAtOp2JWiEw==
@@ -6796,7 +6796,7 @@ source-map-resolve@^0.5.0:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
-source-map-support@^0.5.12, source-map-support@^0.5.13, source-map-support@~0.5.10, source-map-support@~0.5.12:
+source-map-support@^0.5.12, source-map-support@^0.5.13, source-map-support@^0.5.16, source-map-support@~0.5.10, source-map-support@~0.5.12:
   version "0.5.16"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.16.tgz#0ae069e7fe3ba7538c64c98515e35339eac5a042"
   integrity sha512-efyLRJDr68D9hBBNIPWFjhpFzURh+KJykQwvMyW5UiZzYwoF6l4YMMDIJJEyFWxWCqfyxLzz6tSfUFR+kXXsVQ==
