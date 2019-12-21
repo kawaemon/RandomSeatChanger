@@ -1,20 +1,21 @@
 @font-face {
-    font-family: "Noto Sans CJK JP Regular";
-    src: url("~@static/fonts/NotoSansCJKJP/NotoSansCJKjp-Regular.otf") format("opentype");
+  font-family: "Noto Sans CJK JP Regular";
+  src: url("~@static/fonts/NotoSansCJKJP/NotoSansCJKjp-Regular.otf")
+    format("opentype");
 }
 
 body {
-    font-family: "Noto Sans CJK JP Regular" !important;
-    margin: 0 0 0 0;
+  font-family: "Noto Sans CJK JP Regular" !important;
+  margin: 0 0 0 0;
 }
 
 h2 {
-    text-align: center;
-    font-size: 4vmin;
+  text-align: center;
+  font-size: 4vmin;
 }
 
 h3 {
-    font-size: 2.3vmin;
-    transform: translateX(0.3vw);
-    margin: 0 0 0.8vh 0;
+  font-size: 1.9vw;
+  transform: translateX(0.3vw);
+  margin: 0 0 0.8vh 0;
 }

@@ -1,16 +1,29 @@
 "use strict";
 
-import CSS from "csstype";
 import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
 
 export const SeatPanelStyle = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    visible: {
       width: "5vw",
       height: "5vh",
       fontSize: "2.5vmin",
       textAlign: "center",
-      marginBottom: "0.3vh"
+      marginBottom: "0.3vh",
+      marginTop: "0.3vh",
+      marginLeft: "0.3vw",
+      marginRight: "0.3vw"
+    },
+    invisible: {
+      width: "5vw",
+      height: "5vh",
+      fontSize: "2.5vmin",
+      textAlign: "center",
+      marginBottom: "0.3vh",
+      marginTop: "0.3vh",
+      marginLeft: "0.3vw",
+      marginRight: "0.3vw",
+      opacity: 0
     }
   })
 );

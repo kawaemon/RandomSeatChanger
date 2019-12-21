@@ -2,25 +2,40 @@
 
 import * as React from "react";
 import * as Styles from "./Styles";
-import { Grid, Paper } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 
 type SeatPanelProperty = {
+  isEnabled: boolean;
+  showedNumber: number;
   ID: number;
+  onClick: (ID: number) => void;
 };
 
 function SeatPanel(Property: SeatPanelProperty) {
   const Style = Styles.SeatPanelStyle();
   return (
-    <Paper className={Style.root}>
-      <div>{Property.ID}</div>
+    <Paper
+      className={Property.isEnabled ? Style.visible : Style.invisible}
+      onClick={e => {
+        Property.onClick(Property.ID);
+      }}
+    >
+      <div>{Property.showedNumber}</div>
     </Paper>
   );
 }
 
+export type Seat = {
+  isEnabled: boolean;
+  ID: number;
+  showedNumber: number;
+};
+
 export type SeatProperty = {
   width: number;
   height: number;
-  //list: number[];
+  list: Seat[];
+  onClick: (ID: number) => void;
 };
 
 export function seats(Property: SeatProperty) {
@@ -38,12 +53,20 @@ export function seats(Property: SeatProperty) {
       </div>
 
       <div className={GridStyle.verticalContainer}>
-        {ListForMapHeight.map((n, indexn) => {
+        {ListForMapHeight.map(n => {
           return (
-            <div className={GridStyle.horizontalContainer} key={indexn}>
-              {ListForMapWidth.map((p, indexp) => {
+            <div className={GridStyle.horizontalContainer} key={n}>
+              {ListForMapWidth.map(p => {
                 return (
-                  <SeatPanel ID={n * Property.width + p + 1} key={indexp} />
+                  <SeatPanel
+                    key={n * Property.width + p + 1}
+                    ID={n * Property.width + p}
+                    isEnabled={Property.list[n * Property.width + p].isEnabled}
+                    onClick={Property.onClick}
+                    showedNumber={
+                      Property.list[n * Property.width + p].showedNumber
+                    }
+                  />
                 );
               })}
             </div>

@@ -13,7 +13,11 @@ app.commandLine.appendSwitch("lang", "ja");
 function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
-    title: "席替え"
+    title: "席替え",
+    minWidth: 908,
+    minHeight: 550,
+    width: 910,
+    height: 600
   });
 
   if (isDevelopment) {

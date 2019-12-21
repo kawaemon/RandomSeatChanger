@@ -15,10 +15,74 @@ import * as Styles from "./Styles";
 
 require("./Global.css");
 
+type Seats = { width: number; height: number; array: SeatComponent.Seat[] };
+let DefaultSeat: SeatComponent.Seat[] = buildSeatArray(5, 5);
+
+function sizeChangeHandler(
+  isWidth: boolean,
+  value: number,
+  currentSeats: Seats,
+  setSeats: (s: Seats) => void
+) {
+  let width, height: number;
+
+  if (isWidth) {
+    width = value;
+    height = currentSeats.height;
+  } else {
+    width = currentSeats.width;
+    height = value;
+  }
+
+  let SeatArray: SeatComponent.Seat[] = currentSeats.array;
+
+  if (currentSeats.array.length !== width * height) {
+    SeatArray = buildSeatArray(width, height);
+  }
+
+  setSeats({
+    width: width,
+    height: height,
+    array: SeatArray
+  });
+}
+
+function seatClickHandler(
+  ID: number,
+  currentSeats: Seats,
+  setSeats: (s: Seats) => void
+) {
+  let newArray: SeatComponent.Seat[] = currentSeats.array;
+  newArray[ID].isEnabled = false;
+
+  let GenNumber = 0;
+  for (let i = 0; i < newArray.length; i++) {
+    if (newArray[i].isEnabled) ++GenNumber;
+    newArray[i].showedNumber = GenNumber;
+  }
+
+  setSeats({
+    width: currentSeats.width,
+    height: currentSeats.height,
+    array: newArray
+  });
+}
+
+function buildSeatArray(width: number, height: number): SeatComponent.Seat[] {
+  let newArray: SeatComponent.Seat[] = [];
+  for (let i = 0; i < width * height; i++) {
+    newArray.push({ isEnabled: true, ID: i + 1, showedNumber: i + 1 });
+  }
+  return newArray;
+}
+
 function App() {
   const MainPaperStyle = Styles.MainPaperStyle();
-  const [width, setWidth] = useState(5);
-  const [height, setHeight] = useState(5);
+  const [seats, setSeats] = useState({
+    width: 5,
+    height: 5,
+    array: DefaultSeat
+  }); //Type = Seats
 
   return (
     <div style={Styles.BodyStyle}>
@@ -31,14 +95,26 @@ function App() {
       >
         <Grid item>
           <Paper className={MainPaperStyle.root}>
-            <SeatComponent.seats width={width} height={height} />
+            <SeatComponent.seats
+              width={seats.width}
+              height={seats.height}
+              list={seats.array}
+              onClick={i => seatClickHandler(i, seats, setSeats)}
+            />
           </Paper>
         </Grid>
         <Grid item>
           <Paper className={MainPaperStyle.root}>
             <SettingsComponent.settings
-              onWidthChange={setWidth}
-              onHeightChange={setHeight}
+              onWidthChange={w => sizeChangeHandler(true, w, seats, setSeats)}
+              onHeightChange={h => sizeChangeHandler(false, h, seats, setSeats)}
+              onClickSeatsReset={() =>
+                setSeats({
+                  width: seats.width,
+                  height: seats.height,
+                  array: buildSeatArray(seats.width, seats.height)
+                })
+              }
             />
           </Paper>
         </Grid>
@@ -47,6 +123,7 @@ function App() {
   );
 }
 
+//viewport settings
 let meta = document.createElement("meta");
 meta.name = "viewport";
 meta.content =
