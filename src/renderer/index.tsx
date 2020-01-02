@@ -75,13 +75,64 @@ function buildSeatArray(width: number, height: number): SeatComponent.Seat[] {
   return newArray;
 }
 
+function Execute(
+  CurrentSeats: SeatComponent.Seat[],
+  width: number,
+  isForceFrontFuntcionEnabled: boolean,
+  ForceFrontList: number[],
+  ForceFrontRange: number
+): SeatComponent.Seat[] {
+  console.log(
+    `execute ${CurrentSeats} ${width} ${isForceFrontFuntcionEnabled} ${ForceFrontList} ${ForceFrontRange}`
+  );
+
+  //シャッフルする対象の席を抜き出し
+  const EnabledSeats: SeatComponent.Seat[] = CurrentSeats.filter(
+    s => s.isEnabled
+  );
+
+  const ShowedNumbers: number[] = EnabledSeats.map(s => s.showedNumber);
+
+  //シャッフル (Fisher-Yates)
+  while (true) {
+    for (let i = ShowedNumbers.length - 1; i > 0; i--) {
+      let r = Math.floor(Math.random() * (i + 1));
+      let tmp = ShowedNumbers[i];
+      ShowedNumbers[i] = ShowedNumbers[r];
+      ShowedNumbers[r] = tmp;
+    }
+    if (!isForceFrontFuntcionEnabled) break;
+
+    let flag: boolean = false;
+    ForceFrontList.forEach(n => {
+      flag = flag || ShowedNumbers.indexOf(n) > width * ForceFrontRange - 1;
+    });
+    if (!flag) break;
+  }
+
+  //書き戻し
+  for (let i: number = 0; i < EnabledSeats.length; i++) {
+    EnabledSeats[i].showedNumber = ShowedNumbers[i];
+  }
+  const NewArray = CurrentSeats.slice();
+  for (let i: number = 0; i < NewArray.length; i++) {
+    EnabledSeats.forEach(s => {
+      if (NewArray[i].ID == s.ID) {
+        NewArray[i].showedNumber = s.showedNumber;
+      }
+    });
+  }
+
+  return NewArray;
+}
+
 function App() {
   const MainPaperStyle = Styles.MainPaperStyle();
-  const [seats, setSeats] = React.useState({
+  const [seats, setSeats] = React.useState<Seats>({
     width: 5,
     height: 5,
     array: DefaultSeat
-  }); //Type = Seats
+  });
 
   return (
     <div style={Styles.BodyStyle}>
@@ -112,6 +163,12 @@ function App() {
                   width: seats.width,
                   height: seats.height,
                   array: buildSeatArray(seats.width, seats.height)
+                })
+              }
+              onExecute={(a, b, c) =>
+                setSeats({
+                  ...seats,
+                  array: Execute(seats.array, seats.width, a, b, c)
                 })
               }
             />

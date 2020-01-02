@@ -43,11 +43,23 @@ export const ContainerStyle = makeStyles({
   },
   forceFrontPaper: {
     width: "25vw",
+    height: "30vh",
     marginBottom: "1vh"
   },
   input: {
     width: "11vw",
     marginRight: "2vw"
+  },
+  rangeInput: {
+    width: "4vw"
+  },
+  executeButton: {
+    marginLeft: "34vw",
+    width: "10vw",
+    height: "6vh"
+  },
+  ListEntry: {
+    width: "100%"
   }
 });
 

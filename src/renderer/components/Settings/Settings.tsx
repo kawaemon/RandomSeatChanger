@@ -9,16 +9,22 @@ import {
   Button,
   ListItem,
   ListItemText,
-  Paper
+  Paper,
+  Checkbox
 } from "@material-ui/core";
 import { useState } from "react";
 import { FixedSizeList, ListChildComponentProps } from "react-window";
-import { vw } from "../../utils/SizeCalcurator";
+import { vw, vh } from "../../utils/SizeCalcurator";
 
 export type settingsProps = {
   onWidthChange: (newWidth: number) => void;
   onHeightChange: (newHeight: number) => void;
   onClickSeatsReset: () => void;
+  onExecute: (
+    isForceFrontFuntcionEnabled: boolean,
+    ForceFrontList: number[],
+    ForceFrontRange: number
+  ) => void;
 };
 
 export function settings(Property: settingsProps) {
@@ -29,11 +35,15 @@ export function settings(Property: settingsProps) {
 
   const [width, setWidth] = useState(5);
   const [height, setHeight] = useState(5);
-
   const [ForceFrontList, setForceFrontList] = useState<number[]>([]);
-
   const [ForceFrontListInputValue, setForceFrontListInputValue] = useState("");
+  const [ForceFrontRangeInputValue, setForceFrontRangeInputValue] = useState(
+    ""
+  );
   const [isInputError, setInputError] = useState(true);
+  const [isRangeInputError, setRangeInputError] = useState(true);
+  const [isForwardEnabled, setForwardEnabled] = useState(true);
+
   return (
     <>
       <h2>設定</h2>
@@ -119,17 +129,51 @@ export function settings(Property: settingsProps) {
       <div className={TextStyle.tipText}>
         削除したい席を、左の席イメージ上でクリックすると消去できます。
       </div>
-
-      <h3>強制的に前列に来る人の指定</h3>
-
+      <div>
+        <h3>
+          <Checkbox
+            checked={isForwardEnabled}
+            onChange={e => setForwardEnabled(e.target.checked)}
+          />
+          強制的に前列に来る人の設定
+        </h3>
+      </div>
+      前から
+      <Input
+        placeholder="列"
+        className={ContainerStyle.rangeInput}
+        error={isRangeInputError}
+        value={ForceFrontRangeInputValue}
+        type="number"
+        onChange={e => {
+          setForceFrontRangeInputValue(e.target.value);
+          try {
+            if (e.target.value === "") {
+              setRangeInputError(true);
+              return;
+            }
+            const x: number = parseInt(e.target.value);
+            setRangeInputError(x > height || x <= 0);
+          } catch (e) {}
+        }}
+      />
+      以内に
       <Paper className={ContainerStyle.forceFrontPaper}>
         <FixedSizeList
           itemCount={ForceFrontList.length}
           itemSize={40}
-          height={200}
-          width={vw(20)}
+          width={vw(25)}
+          height={vh(30)}
         >
-          {ForceFrontListEntryProvider(ForceFrontList)}
+          {ForceFrontListEntryProvider(
+            ForceFrontList,
+            ContainerStyle.ListEntry,
+            (n: number) => {
+              const NewArray = ForceFrontList.slice();
+              NewArray.splice(n, 1);
+              setForceFrontList(NewArray);
+            }
+          )}
         </FixedSizeList>
       </Paper>
       <Input
@@ -151,11 +195,6 @@ export function settings(Property: settingsProps) {
             );
           } catch (e) {}
         }}
-        onKeyDown={e => {
-          if (e.keyCode == 13) {
-            //TODO: 実装
-          }
-        }}
       />
       <Button
         disabled={isInputError}
@@ -173,19 +212,47 @@ export function settings(Property: settingsProps) {
       >
         リストに追加
       </Button>
+      <div>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={
+            isForwardEnabled
+              ? !(!(ForceFrontList.length <= 0) && !isRangeInputError)
+              : false
+          }
+          className={ContainerStyle.executeButton}
+          onClick={e => {
+            Property.onExecute(
+              isForwardEnabled,
+              ForceFrontList,
+              parseInt(ForceFrontRangeInputValue)
+            );
+          }}
+        >
+          実行!
+        </Button>
+      </div>
     </>
   );
 }
 
 function ForceFrontListEntryProvider(
-  CurrentList: number[]
+  CurrentList: number[],
+  ClassName: string,
+  deleteHandler: (n: number) => void
 ): (props: ListChildComponentProps) => JSX.Element {
   return (props: ListChildComponentProps) => {
     const { index, style } = props;
 
     return (
-      <ListItem button style={style}>
-        <ListItemText primary={CurrentList[index]} />
+      <ListItem
+        button
+        style={style}
+        className={ClassName}
+        onClick={e => deleteHandler(index)}
+      >
+        <ListItemText primary={`${CurrentList[index]}番`} />
       </ListItem>
     );
   };
