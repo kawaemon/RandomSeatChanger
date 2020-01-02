@@ -12,7 +12,6 @@
     "source-map-support": "^0.5.12"
   },
   "devDependencies": {
-    "prettier": "^1.19.1",
     "@babel/core": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.0",
@@ -20,13 +19,16 @@
     "@material-ui/icons": "^4.5.1",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
+    "@types/react-window": "^1.8.1",
     "css-loader": "^3.2.1",
     "electron": "5.0.6",
     "electron-builder": "^21.2.0",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-window": "^1.8.5",
     "typescript": "^3.7.2",
     "webpack": "~4.35.3"
   },

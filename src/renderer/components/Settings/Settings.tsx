@@ -1,9 +1,19 @@
 "use strict";
 
 import * as React from "react";
-import { useState } from "react";
-import { Grid, Slider, Input, Button, Slide } from "@material-ui/core";
 import * as Styles from "./Styles";
+
+import {
+  Slider,
+  Input,
+  Button,
+  ListItem,
+  ListItemText,
+  Paper
+} from "@material-ui/core";
+import { useState } from "react";
+import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { vw } from "../../utils/SizeCalcurator";
 
 export type settingsProps = {
   onWidthChange: (newWidth: number) => void;
@@ -16,9 +26,14 @@ export function settings(Property: settingsProps) {
   const ContainerStyle = Styles.ContainerStyle();
   const ButtonStyle = Styles.ButtonStyle();
   const TextStyle = Styles.TextStyle();
+
   const [width, setWidth] = useState(5);
   const [height, setHeight] = useState(5);
 
+  const [ForceFrontList, setForceFrontList] = useState<number[]>([]);
+
+  const [ForceFrontListInputValue, setForceFrontListInputValue] = useState("");
+  const [isInputError, setInputError] = useState(true);
   return (
     <>
       <h2>設定</h2>
@@ -92,7 +107,6 @@ export function settings(Property: settingsProps) {
           </div>
         </div>
       </div>
-
       <div className={ContainerStyle.buttonContainer}>
         <Button
           color="primary"
@@ -105,6 +119,74 @@ export function settings(Property: settingsProps) {
       <div className={TextStyle.tipText}>
         削除したい席を、左の席イメージ上でクリックすると消去できます。
       </div>
+
+      <h3>強制的に前列に来る人の指定</h3>
+
+      <Paper className={ContainerStyle.forceFrontPaper}>
+        <FixedSizeList
+          itemCount={ForceFrontList.length}
+          itemSize={40}
+          height={200}
+          width={vw(20)}
+        >
+          {ForceFrontListEntryProvider(ForceFrontList)}
+        </FixedSizeList>
+      </Paper>
+      <Input
+        placeholder="出席番号"
+        className={ContainerStyle.input}
+        error={isInputError}
+        value={ForceFrontListInputValue}
+        type="number"
+        onChange={e => {
+          setForceFrontListInputValue(e.target.value);
+          try {
+            if (e.target.value === "") {
+              setInputError(true);
+              return;
+            }
+            const x: number = parseInt(e.target.value);
+            setInputError(
+              x > width * height || x <= 0 || ForceFrontList.includes(x)
+            );
+          } catch (e) {}
+        }}
+        onKeyDown={e => {
+          if (e.keyCode == 13) {
+            //TODO: 実装
+          }
+        }}
+      />
+      <Button
+        disabled={isInputError}
+        color="primary"
+        variant="contained"
+        onClick={e => {
+          if (!isInputError) {
+            setForceFrontList(
+              ForceFrontList.concat(parseInt(ForceFrontListInputValue))
+            );
+            //重複登録防止
+            setInputError(true);
+          }
+        }}
+      >
+        リストに追加
+      </Button>
     </>
   );
+}
+
+function ForceFrontListEntryProvider(
+  CurrentList: number[]
+): (props: ListChildComponentProps) => JSX.Element {
+  return (props: ListChildComponentProps) => {
+    const { index, style } = props;
+
+    return (
+      <ListItem button style={style}>
+        <ListItemText primary={CurrentList[index]} />
+      </ListItem>
+    );
+  };
 }
