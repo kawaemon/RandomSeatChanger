@@ -5,10 +5,10 @@ import * as Styles from "./Styles";
 import { Paper } from "@material-ui/core";
 
 type SeatPanelProperty = {
-  isEnabled: boolean;
-  showedNumber: number;
-  ID: number;
-  onClick: (ID: number) => void;
+  isEnabled: boolean; //表示されてるかされてないか
+  showedNumber: number; //表示される番号
+  ID: number; //固有の数字
+  onClick: (ID: number) => void; //クリックされた時（消される時）
 };
 
 function SeatPanel(Property: SeatPanelProperty) {
@@ -31,19 +31,20 @@ export type Seat = {
   showedNumber: number;
 };
 
-export type SeatProperty = {
+export type SeatsViewProperty = {
   width: number;
   height: number;
   list: Seat[];
-  onClick: (ID: number) => void;
+  onSeatClick: (ID: number) => void;
 };
 
-export function seats(Property: SeatProperty) {
-  const ListForMapWidth: number[] = Array.from(Array(Property.width).keys());
-  const ListForMapHeight: number[] = Array.from(Array(Property.height).keys());
+// 構造はだいたいこんな感じ
+// https://imgur.com/a/9RSolAE
+
+export function SeatsView(Property: SeatsViewProperty) {
   const TeacherDeskStyle = Styles.TeacherDesk();
   const TeacherDeskContainerStyle = Styles.TeacherDeskContainer();
-  const GridStyle = Styles.Grid();
+  const GridStyle = Styles.SeatsView();
 
   return (
     <>
@@ -53,16 +54,16 @@ export function seats(Property: SeatProperty) {
       </div>
 
       <div className={GridStyle.verticalContainer}>
-        {ListForMapHeight.map(n => {
+        {Array.from(Array(Property.height).keys()).map(n => {
           return (
             <div className={GridStyle.horizontalContainer} key={n}>
-              {ListForMapWidth.map(p => {
+              {Array.from(Array(Property.width).keys()).map(p => {
                 return (
                   <SeatPanel
-                    key={n * Property.width + p + 1}
+                    key={n * Property.width + p}
                     ID={n * Property.width + p}
                     isEnabled={Property.list[n * Property.width + p].isEnabled}
-                    onClick={Property.onClick}
+                    onClick={Property.onSeatClick}
                     showedNumber={
                       Property.list[n * Property.width + p].showedNumber
                     }

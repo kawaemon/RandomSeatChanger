@@ -7,7 +7,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Grid, Paper } from "@material-ui/core/";
 
-import * as SeatComponent from "./components/Seats/Seats";
+import * as SeatComponent from "./components/SeatsView/SeatsView";
 import * as SettingsComponent from "./components/Settings/Settings";
 
 import * as Styles from "./Styles";
@@ -145,20 +145,20 @@ function App() {
       >
         <Grid item>
           <Paper className={MainPaperStyle.root}>
-            <SeatComponent.seats
+            <SeatComponent.SeatsView
               width={seats.width}
               height={seats.height}
               list={seats.array}
-              onClick={i => seatClickHandler(i, seats, setSeats)}
+              onSeatClick={i => seatClickHandler(i, seats, setSeats)}
             />
           </Paper>
         </Grid>
         <Grid item>
           <Paper className={MainPaperStyle.root}>
-            <SettingsComponent.settings
+            <SettingsComponent.Settings
               onWidthChange={w => sizeChangeHandler(true, w, seats, setSeats)}
               onHeightChange={h => sizeChangeHandler(false, h, seats, setSeats)}
-              onClickSeatsReset={() =>
+              onResetSeats={() =>
                 setSeats({
                   width: seats.width,
                   height: seats.height,

@@ -1,28 +1,23 @@
 "use strict";
 
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
-export const SliderStyle = makeStyles(
-  createStyles({
-    slider: {
-      marginTop: "0.4vw",
-      width: "28vw"
-    },
-    input: {
-      width: "5vw",
-      fontSize: "1.3vw"
-    }
-  })
-);
-
-export const ContainerStyle = makeStyles({
-  toplevel: {
+export const Styles = makeStyles({
+  slider: {
+    marginTop: "0.4vw",
+    width: "28vw"
+  },
+  sliderInput: {
+    width: "5vw",
+    fontSize: "1.3vw"
+  },
+  VerticalContainer: {
     width: "100%",
     display: "flex",
     justifyContent: "center",
     flexDirection: "column"
   },
-  secondLevel: {
+  HorizontalContainer: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
@@ -33,20 +28,12 @@ export const ContainerStyle = makeStyles({
     display: "flex",
     justifyContent: "flex-end"
   },
-  forceFrontListContainer1: {
-    display: "flex",
-    flexDirection: "row"
-  },
-  forceFrontListContainer2: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  forceFrontPaper: {
+  forceFrontListPaper: {
     width: "25vw",
     height: "30vh",
     marginBottom: "1vh"
   },
-  input: {
+  forceFrontInput: {
     width: "11vw",
     marginRight: "2vw"
   },
@@ -58,21 +45,15 @@ export const ContainerStyle = makeStyles({
     width: "10vw",
     height: "6vh"
   },
-  ListEntry: {
+  listEntry: {
     width: "100%"
-  }
-});
-
-export const ButtonStyle = makeStyles({
-  button: {
+  },
+  restoreButton: {
     marginTop: "1vh",
     marginLeft: "30vw",
     marginBottom: "1vh",
     fontSize: "1.1vw"
-  }
-});
-
-export const TextStyle = makeStyles({
+  },
   sliderText: {
     fontSize: "1.4vw"
   },

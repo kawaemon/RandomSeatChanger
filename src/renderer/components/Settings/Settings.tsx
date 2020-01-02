@@ -2,6 +2,9 @@
 
 import * as React from "react";
 import * as Styles from "./Styles";
+import { useState } from "react";
+import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { vw, vh } from "../../utils/SizeCalcurator";
 
 import {
   Slider,
@@ -12,48 +15,45 @@ import {
   Paper,
   Checkbox
 } from "@material-ui/core";
-import { useState } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
-import { vw, vh } from "../../utils/SizeCalcurator";
 
-export type settingsProps = {
-  onWidthChange: (newWidth: number) => void;
-  onHeightChange: (newHeight: number) => void;
-  onClickSeatsReset: () => void;
+export type SettingsProps = {
+  onWidthChange: (newWidth: number) => void; //横数の変更のときに呼ばれる関数
+  onHeightChange: (newHeight: number) => void; //縦数の変更のときに呼ばれる関数
+  onResetSeats: () => void; //「削除した席を復元」ボタンが押された時に呼ばれる関数
   onExecute: (
     isForceFrontFuntcionEnabled: boolean,
     ForceFrontList: number[],
     ForceFrontRange: number
-  ) => void;
+  ) => void; //実行ボタンが押されたときに呼ばれる関数
 };
 
-export function settings(Property: settingsProps) {
-  const SliderStyle = Styles.SliderStyle();
-  const ContainerStyle = Styles.ContainerStyle();
-  const ButtonStyle = Styles.ButtonStyle();
-  const TextStyle = Styles.TextStyle();
+export function Settings(Property: SettingsProps) {
+  const styles = Styles.Styles();
 
-  const [width, setWidth] = useState(5);
-  const [height, setHeight] = useState(5);
-  const [ForceFrontList, setForceFrontList] = useState<number[]>([]);
-  const [ForceFrontListInputValue, setForceFrontListInputValue] = useState("");
+  const [width, setWidth] = useState(5); //横に並ぶ数
+  const [height, setHeight] = useState(5); //縦に並ぶ数
+
+  const [ForceFrontList, setForceFrontList] = useState<number[]>([]); //強制的に前列に来る人の出席番号リスト
+  const [ForceFrontListInputValue, setForceFrontListInputValue] = useState(""); //「出席番号」入力欄に書かれた値
   const [ForceFrontRangeInputValue, setForceFrontRangeInputValue] = useState(
     ""
-  );
-  const [isInputError, setInputError] = useState(true);
-  const [isRangeInputError, setRangeInputError] = useState(true);
-  const [isForwardEnabled, setForwardEnabled] = useState(true);
+  ); //「列」入力欄に書かれた値
+  const [isFrontInputError, setFrontInputError] = useState(true); //「出席番号」入力欄がエラーかどうか
+  const [isRangeInputError, setRangeInputError] = useState(true); ///「列」入力欄がエラーかどうか
+  const [isForceFrontFunctionEnabled, setForceFrontFunctionEnabled] = useState(
+    true
+  ); //強制的に... の左のチェックボックスが有効かどうか（そもそも前列に特定の人を来させる機能を有効にするか無効にするか）
 
   return (
     <>
       <h2>設定</h2>
       <h3>席数の指定</h3>
-      <div className={ContainerStyle.toplevel}>
-        <div className={ContainerStyle.secondLevel}>
-          <div className={TextStyle.sliderText}>縦に並ぶ数</div>
+      <div className={styles.VerticalContainer}>
+        <div className={styles.HorizontalContainer}>
+          <div className={styles.sliderText}>縦に並ぶ数</div>
           <div>
             <Slider
-              className={SliderStyle.slider}
+              className={styles.slider}
               marks
               step={1}
               min={1}
@@ -69,9 +69,8 @@ export function settings(Property: settingsProps) {
           </div>
           <div>
             <Input
-              className={SliderStyle.input}
+              className={styles.sliderInput}
               value={height}
-              margin="dense"
               onChange={e => {
                 if (e.target.value === "") return;
                 let i = parseInt(e.target.value);
@@ -83,11 +82,11 @@ export function settings(Property: settingsProps) {
           </div>
         </div>
 
-        <div className={ContainerStyle.secondLevel}>
-          <div className={TextStyle.sliderText}>横に並ぶ数</div>
+        <div className={styles.HorizontalContainer}>
+          <div className={styles.sliderText}>横に並ぶ数</div>
           <div>
             <Slider
-              className={SliderStyle.slider}
+              className={styles.slider}
               marks
               step={1}
               min={1}
@@ -103,9 +102,8 @@ export function settings(Property: settingsProps) {
           </div>
           <div>
             <Input
-              className={SliderStyle.input}
+              className={styles.sliderInput}
               value={width}
-              margin="dense"
               onChange={e => {
                 if (e.target.value === "") return;
                 let i = parseInt(e.target.value);
@@ -117,23 +115,23 @@ export function settings(Property: settingsProps) {
           </div>
         </div>
       </div>
-      <div className={ContainerStyle.buttonContainer}>
+      <div className={styles.buttonContainer}>
         <Button
           color="primary"
-          className={ButtonStyle.button}
-          onClick={Property.onClickSeatsReset}
+          className={styles.restoreButton}
+          onClick={Property.onResetSeats}
         >
           削除した席を復元
         </Button>
       </div>
-      <div className={TextStyle.tipText}>
+      <div className={styles.tipText}>
         削除したい席を、左の席イメージ上でクリックすると消去できます。
       </div>
       <div>
         <h3>
           <Checkbox
-            checked={isForwardEnabled}
-            onChange={e => setForwardEnabled(e.target.checked)}
+            checked={isForceFrontFunctionEnabled}
+            onChange={e => setForceFrontFunctionEnabled(e.target.checked)}
           />
           強制的に前列に来る人の設定
         </h3>
@@ -141,7 +139,7 @@ export function settings(Property: settingsProps) {
       前から
       <Input
         placeholder="列"
-        className={ContainerStyle.rangeInput}
+        className={styles.rangeInput}
         error={isRangeInputError}
         value={ForceFrontRangeInputValue}
         type="number"
@@ -149,64 +147,65 @@ export function settings(Property: settingsProps) {
           setForceFrontRangeInputValue(e.target.value);
           try {
             if (e.target.value === "") {
+              //空はエラー
               setRangeInputError(true);
               return;
             }
             const x: number = parseInt(e.target.value);
-            setRangeInputError(x > height || x <= 0);
+            setRangeInputError(x > height || x <= 0); //設定された列数を超えているか0以下はエラー
           } catch (e) {}
         }}
       />
       以内に
-      <Paper className={ContainerStyle.forceFrontPaper}>
+      <Paper className={styles.forceFrontListPaper}>
         <FixedSizeList
           itemCount={ForceFrontList.length}
           itemSize={40}
           width={vw(25)}
-          height={vh(30)}
+          height={vh(30)} //ここにはCSSのvh vwが使えなかったので手動で関数作ってなんとかしました。
         >
           {ForceFrontListEntryProvider(
             ForceFrontList,
-            ContainerStyle.ListEntry,
+            styles.listEntry,
             (n: number) => {
-              const NewArray = ForceFrontList.slice();
-              NewArray.splice(n, 1);
-              setForceFrontList(NewArray);
+              const NewArray = ForceFrontList.slice(); //配列を複製
+              NewArray.splice(n, 1); //クリックされたものを取り除く
+              setForceFrontList(NewArray); //反映
             }
           )}
         </FixedSizeList>
       </Paper>
       <Input
         placeholder="出席番号"
-        className={ContainerStyle.input}
-        error={isInputError}
+        className={styles.forceFrontInput}
+        error={isFrontInputError}
         value={ForceFrontListInputValue}
         type="number"
         onChange={e => {
           setForceFrontListInputValue(e.target.value);
           try {
             if (e.target.value === "") {
-              setInputError(true);
+              setFrontInputError(true); //もし空白だったらエラー
               return;
             }
             const x: number = parseInt(e.target.value);
-            setInputError(
-              x > width * height || x <= 0 || ForceFrontList.includes(x)
+            setFrontInputError(
+              x > width * height || x <= 0 || ForceFrontList.includes(x) //0以下か席数を超えてるかすでにリストに入ってたらエラー
             );
           } catch (e) {}
         }}
       />
       <Button
-        disabled={isInputError}
+        disabled={isFrontInputError}
         color="primary"
         variant="contained"
         onClick={e => {
-          if (!isInputError) {
+          if (!isFrontInputError) {
             setForceFrontList(
               ForceFrontList.concat(parseInt(ForceFrontListInputValue))
             );
             //重複登録防止
-            setInputError(true);
+            setFrontInputError(true);
           }
         }}
       >
@@ -217,14 +216,14 @@ export function settings(Property: settingsProps) {
           variant="contained"
           color="secondary"
           disabled={
-            isForwardEnabled
+            isForceFrontFunctionEnabled
               ? !(!(ForceFrontList.length <= 0) && !isRangeInputError)
               : false
           }
-          className={ContainerStyle.executeButton}
+          className={styles.executeButton}
           onClick={e => {
             Property.onExecute(
-              isForwardEnabled,
+              isForceFrontFunctionEnabled,
               ForceFrontList,
               parseInt(ForceFrontRangeInputValue)
             );
@@ -237,6 +236,7 @@ export function settings(Property: settingsProps) {
   );
 }
 
+//前列に来る人リストの一つ一つの要素を返す関数を返す関数
 function ForceFrontListEntryProvider(
   CurrentList: number[],
   ClassName: string,
