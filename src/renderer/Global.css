@@ -3,10 +3,14 @@
   src: url("~@static/fonts/NotoSansCJKJP/NotoSansCJKjp-Regular.otf")
     format("opentype");
 }
-
+html{
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
 body {
   font-family: "Noto Sans CJK JP Regular" !important;
   margin: 0 0 0 0;
+  background-color: #f5f5f5;
 }
 
 h2 {

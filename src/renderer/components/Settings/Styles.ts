@@ -5,7 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 export const Styles = makeStyles({
   slider: {
     marginTop: "0.4vw",
-    width: "28vw"
+    width: "28vw",
+    WebkitAppRegion:"none"
   },
   sliderInput: {
     width: "5vw",
