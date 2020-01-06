@@ -115,6 +115,9 @@ export function Settings(Property: SettingsProps) {
           </div>
         </div>
       </div>
+      <div className={styles.tipText}>
+        削除したい席を、左の席イメージ上でクリックすると消去できます。
+      </div>
       <div className={styles.buttonContainer}>
         <Button
           color="primary"
@@ -124,113 +127,118 @@ export function Settings(Property: SettingsProps) {
           削除した席を復元
         </Button>
       </div>
-      <div className={styles.tipText}>
-        削除したい席を、左の席イメージ上でクリックすると消去できます。
-      </div>
       <div>
         <h3>
           <Checkbox
+            color="primary"
             checked={isForceFrontFunctionEnabled}
             onChange={e => setForceFrontFunctionEnabled(e.target.checked)}
           />
           強制的に前列に来る人の設定
         </h3>
       </div>
-      前から
-      <Input
-        placeholder="列"
-        className={styles.rangeInput}
-        error={isRangeInputError}
-        value={ForceFrontRangeInputValue}
-        type="number"
-        onChange={e => {
-          setForceFrontRangeInputValue(e.target.value);
-          try {
-            if (e.target.value === "") {
-              //空はエラー
-              setRangeInputError(true);
-              return;
-            }
-            const x: number = parseInt(e.target.value);
-            setRangeInputError(x > height || x <= 0); //設定された列数を超えているか0以下はエラー
-          } catch (e) {}
-        }}
-      />
-      以内に
-      <Paper className={styles.forceFrontListPaper}>
-        <FixedSizeList
-          itemCount={ForceFrontList.length}
-          itemSize={40}
-          width={vw(25)}
-          height={vh(30)} //ここにはCSSのvh vwが使えなかったので手動で関数作ってなんとかしました。
-        >
-          {ForceFrontListEntryProvider(
-            ForceFrontList,
-            styles.listEntry,
-            (n: number) => {
-              const NewArray = ForceFrontList.slice(); //配列を複製
-              NewArray.splice(n, 1); //クリックされたものを取り除く
-              setForceFrontList(NewArray); //反映
-            }
-          )}
-        </FixedSizeList>
-      </Paper>
-      <Input
-        placeholder="出席番号"
-        className={styles.forceFrontInput}
-        error={isFrontInputError}
-        value={ForceFrontListInputValue}
-        type="number"
-        onChange={e => {
-          setForceFrontListInputValue(e.target.value);
-          try {
-            if (e.target.value === "") {
-              setFrontInputError(true); //もし空白だったらエラー
-              return;
-            }
-            const x: number = parseInt(e.target.value);
-            setFrontInputError(
-              x > width * height || x <= 0 || ForceFrontList.includes(x) //0以下か席数を超えてるかすでにリストに入ってたらエラー
-            );
-          } catch (e) {}
-        }}
-      />
-      <Button
-        disabled={isFrontInputError}
-        color="primary"
-        variant="contained"
-        onClick={e => {
-          if (!isFrontInputError) {
-            setForceFrontList(
-              ForceFrontList.concat(parseInt(ForceFrontListInputValue))
-            );
-            //重複登録防止
-            setFrontInputError(true);
-          }
-        }}
-      >
-        リストに追加
-      </Button>
-      <div>
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled={
-            isForceFrontFunctionEnabled
-              ? !(!(ForceFrontList.length <= 0) && !isRangeInputError)
-              : false
-          }
-          className={styles.executeButton}
-          onClick={e => {
-            Property.onExecute(
-              isForceFrontFunctionEnabled,
+      <div className={styles.frontRow}>
+        前から
+        <Input
+          placeholder=""
+          className={styles.rangeInput}
+          color="primary"
+          error={isRangeInputError}
+          value={ForceFrontRangeInputValue}
+          type="number"
+          onChange={e => {
+            setForceFrontRangeInputValue(e.target.value);
+            try {
+              if (e.target.value === "") {
+                //空はエラー
+                setRangeInputError(true);
+                return;
+              }
+              const x: number = parseInt(e.target.value);
+              setRangeInputError(x > height || x <= 0); //設定された列数を超えているか0以下はエラー
+            } catch (e) {}
+          }}
+        />
+        列目以内に
+        <Paper className={`${styles.forceFrontListPaper} ${styles.fixedSize}`}>
+          <FixedSizeList
+            itemCount={ForceFrontList.length}
+            itemSize={40}
+            width={vw(25)}
+            height={vh(30)} //ここにはCSSのvh vwが使えなかったので手動で関数作ってなんとかしました。
+          >
+            {ForceFrontListEntryProvider(
               ForceFrontList,
-              parseInt(ForceFrontRangeInputValue)
-            );
+              styles.listEntry,
+              (n: number) => {
+                const NewArray = ForceFrontList.slice(); //配列を複製
+                NewArray.splice(n, 1); //クリックされたものを取り除く
+                setForceFrontList(NewArray); //反映
+              }
+            )}
+          </FixedSizeList>
+        </Paper>
+        <span className={styles.addList}>
+          出席番号
+          <Input
+            placeholder=""
+            className={styles.forceFrontInput}
+            error={isFrontInputError}
+            value={ForceFrontListInputValue}
+            type="number"
+            onChange={e => {
+              setForceFrontListInputValue(e.target.value);
+              try {
+                if (e.target.value === "") {
+                  setFrontInputError(true); //もし空白だったらエラー
+                  return;
+                }
+                const x: number = parseInt(e.target.value);
+                setFrontInputError(
+                  x > width * height || x <= 0 || ForceFrontList.includes(x) //0以下か席数を超えてるかすでにリストに入ってたらエラー
+                );
+              } catch (e) {}
+            }}
+          />
+          番
+        </span>
+        <Button
+          disabled={isFrontInputError}
+          color="primary"
+          variant="contained"
+          onClick={e => {
+            if (!isFrontInputError) {
+              setForceFrontList(
+                ForceFrontList.concat(parseInt(ForceFrontListInputValue))
+              );
+              //重複登録防止
+              setFrontInputError(true);
+            }
           }}
         >
-          実行!
+          リストに追加
         </Button>
+        <div>
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={
+              isForceFrontFunctionEnabled
+                ? !(!(ForceFrontList.length <= 0) && !isRangeInputError)
+                : false
+            }
+            className={styles.executeButton}
+            onClick={e => {
+              Property.onExecute(
+                isForceFrontFunctionEnabled,
+                ForceFrontList,
+                parseInt(ForceFrontRangeInputValue)
+              );
+            }}
+          >
+            実行!
+          </Button>
+        </div>
       </div>
     </>
   );
