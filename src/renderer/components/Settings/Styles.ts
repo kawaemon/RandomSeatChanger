@@ -53,7 +53,11 @@ export const Styles = makeStyles({
     height: "6vh"
   },
   listEntry: {
-    width: "100%"
+    //
+    //
+    // ListEntryのWidth,Heightは、<FixedSizeGrid>の引数に与えなければなりません
+    // 変更する時はそちらを変更してください。
+    //
   },
   restoreButton: {
     marginTop: "1vh",

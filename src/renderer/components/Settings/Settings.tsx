@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import * as Styles from "./Styles";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { useState } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { FixedSizeGrid, GridChildComponentProps } from "react-window";
 import { vw, vh } from "../../utils/SizeCalcurator";
 
 import {
@@ -11,7 +12,6 @@ import {
   Input,
   Button,
   ListItem,
-  ListItemText,
   Paper,
   Checkbox
 } from "@material-ui/core";
@@ -38,7 +38,8 @@ export function Settings(Property: SettingsProps) {
   const [ForceFrontRangeInputValue, setForceFrontRangeInputValue] = useState(
     ""
   ); //「列」入力欄に書かれた値
-  const [isFrontInputError, setFrontInputError] = useState(true); //「出席番号」入力欄がエラーかどうか
+  const [isFrontInputError, setFrontInputError] = useState(false); //「出席番号」入力欄がエラーかどうか
+  const [isFrontListLimitExceeded, setFrontListLimitExceeded] = useState(false);
   const [isRangeInputError, setRangeInputError] = useState(true); ///「列」入力欄がエラーかどうか
   const [isForceFrontFunctionEnabled, setForceFrontFunctionEnabled] = useState(
     true
@@ -143,8 +144,9 @@ export function Settings(Property: SettingsProps) {
           placeholder=""
           className={styles.rangeInput}
           color="primary"
-          error={isRangeInputError}
+          error={isRangeInputError && isForceFrontFunctionEnabled}
           value={ForceFrontRangeInputValue}
+          disabled={!isForceFrontFunctionEnabled}
           type="number"
           onChange={e => {
             setForceFrontRangeInputValue(e.target.value);
@@ -153,19 +155,26 @@ export function Settings(Property: SettingsProps) {
                 //空はエラー
                 setRangeInputError(true);
                 return;
+              } else {
+                setRangeInputError(false);
               }
               const x: number = parseInt(e.target.value);
-              setRangeInputError(x > height || x <= 0); //設定された列数を超えているか0以下はエラー
+              if (x <= 0) setForceFrontRangeInputValue("1");
+              else if (x > height)
+                setForceFrontRangeInputValue(height.toString());
             } catch (e) {}
           }}
         />
         列目以内に
         <Paper className={`${styles.forceFrontListPaper} ${styles.fixedSize}`}>
-          <FixedSizeList
-            itemCount={ForceFrontList.length}
-            itemSize={40}
+          <FixedSizeGrid
+            columnCount={2}
+            rowCount={ForceFrontList.length / 2 + 1}
             width={vw(25)}
-            height={vh(30)} //ここにはCSSのvh vwが使えなかったので手動で関数作ってなんとかしました。
+            height={vh(30)}
+            columnWidth={vw(10)}
+            rowHeight={vh(10)}
+            //ここにはCSSのvh vwが使えなかったので手動で関数作ってなんとかしました。
           >
             {ForceFrontListEntryProvider(
               ForceFrontList,
@@ -176,26 +185,30 @@ export function Settings(Property: SettingsProps) {
                 setForceFrontList(NewArray); //反映
               }
             )}
-          </FixedSizeList>
+          </FixedSizeGrid>
         </Paper>
         <span className={styles.addList}>
           出席番号
           <Input
             placeholder=""
+            disabled={!isForceFrontFunctionEnabled}
             className={styles.forceFrontInput}
-            error={isFrontInputError}
+            error={isFrontInputError && isForceFrontFunctionEnabled}
             value={ForceFrontListInputValue}
             type="number"
             onChange={e => {
               setForceFrontListInputValue(e.target.value);
               try {
-                if (e.target.value === "") {
-                  setFrontInputError(true); //もし空白だったらエラー
-                  return;
+                let x: number = parseInt(e.target.value);
+                if (x > width * height) {
+                  x = width * height;
+                  setForceFrontListInputValue(x.toString());
+                } else if (x <= 0) {
+                  x = 1;
+                  setForceFrontListInputValue("1");
                 }
-                const x: number = parseInt(e.target.value);
                 setFrontInputError(
-                  x > width * height || x <= 0 || ForceFrontList.includes(x) //0以下か席数を超えてるかすでにリストに入ってたらエラー
+                  ForceFrontList.includes(x) //すでにリストに入ってたらエラー
                 );
               } catch (e) {}
             }}
@@ -203,20 +216,28 @@ export function Settings(Property: SettingsProps) {
           番
         </span>
         <Button
-          disabled={isFrontInputError}
+          disabled={
+            isFrontInputError ||
+            isFrontListLimitExceeded ||
+            !isForceFrontFunctionEnabled
+          }
           color="primary"
           variant="contained"
           onClick={e => {
-            if (!isFrontInputError) {
-              setForceFrontList(
-                ForceFrontList.concat(parseInt(ForceFrontListInputValue))
-              );
-              //重複登録防止
-              setFrontInputError(true);
-            }
+            setForceFrontListInputValue("");
+            setFrontInputError(true);
+            setForceFrontList(
+              ForceFrontList.concat(parseInt(ForceFrontListInputValue)).sort(
+                (a, b) => a - b
+              )
+            );
+            setFrontListLimitExceeded(
+              ForceFrontList.length >=
+                parseInt(ForceFrontRangeInputValue) * width
+            );
           }}
         >
-          リストに追加
+          {isFrontListLimitExceeded ? "数が多すぎます。" : "リストに追加"}
         </Button>
         <div>
           <Button
@@ -249,19 +270,27 @@ function ForceFrontListEntryProvider(
   CurrentList: number[],
   ClassName: string,
   deleteHandler: (n: number) => void
-): (props: ListChildComponentProps) => JSX.Element {
-  return (props: ListChildComponentProps) => {
-    const { index, style } = props;
-
-    return (
-      <ListItem
-        button
-        style={style}
-        className={ClassName}
-        onClick={e => deleteHandler(index)}
-      >
-        <ListItemText primary={`${CurrentList[index]}番`} />
-      </ListItem>
-    );
+): (props: GridChildComponentProps) => JSX.Element {
+  return (props: GridChildComponentProps) => {
+    const [isHovered, setHovered] = useState(false);
+    const { rowIndex, columnIndex, style } = props;
+    const arrayIndex = rowIndex * 2 + columnIndex;
+    if (CurrentList.length > arrayIndex) {
+      return (
+        <ListItem
+          button
+          style={style}
+          className={ClassName}
+          onClick={e => deleteHandler(arrayIndex)}
+          onMouseEnter={e => setHovered(true)}
+          onMouseLeave={e => setHovered(false)}
+        >
+          <div>{`${CurrentList[arrayIndex]}番`}</div>
+          <DeleteIcon color={isHovered ? "secondary" : "disabled"} />
+        </ListItem>
+      );
+    } else {
+      return <div></div>;
+    }
   };
 }
