@@ -82,10 +82,6 @@ function Execute(
   ForceFrontList: number[],
   ForceFrontRange: number
 ): SeatComponent.Seat[] {
-  console.log(
-    `execute ${CurrentSeats} ${width} ${isForceFrontFuntcionEnabled} ${ForceFrontList} ${ForceFrontRange}`
-  );
-
   //シャッフルする対象の席を抜き出し
   const EnabledSeats: SeatComponent.Seat[] = CurrentSeats.filter(
     s => s.isEnabled
@@ -94,7 +90,9 @@ function Execute(
   const ShowedNumbers: number[] = EnabledSeats.map(s => s.showedNumber);
 
   //シャッフル (Fisher-Yates)
+  let count: number = 0;
   while (true) {
+    ++count;
     for (let i = ShowedNumbers.length - 1; i > 0; i--) {
       let r = Math.floor(Math.random() * (i + 1));
       let tmp = ShowedNumbers[i];
@@ -109,6 +107,7 @@ function Execute(
     });
     if (!flag) break;
   }
+  console.log(`${count}回の試行`);
 
   //書き戻し
   for (let i: number = 0; i < EnabledSeats.length; i++) {
