@@ -48,9 +48,12 @@ export const Styles = makeStyles({
     margin: "1vh 0"
   },
   executeButton: {
-    marginLeft: "34vw",
+    position: "absolute",
+    float: "right",
     width: "10vw",
-    height: "6vh"
+    height: "6vh",
+    bottom: "3vh",
+    right: "3vw"
   },
   listEntry: {
     //
@@ -77,6 +80,12 @@ export const Styles = makeStyles({
     border: "1px solid #4153AF",
     boxShadow:
       "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12), inset 0 0 1px #4153AF",
-    borderRadius: "4px"
+    borderRadius: "4px",
+    width: "40vw"
+  },
+  addList_div: {
+    margin: "1vh 0",
+    float: "left",
+    width: "100%"
   }
 });

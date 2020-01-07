@@ -14,11 +14,11 @@ function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
     title: "席替え",
-    minWidth: 950,
-    minHeight: 650,
+    minWidth: 1000,
+    minHeight: 680,
     width: 1000,
     height: 680,
-    titleBarStyle: 'hidden'
+    titleBarStyle: "hidden"
   });
 
   if (isDevelopment) {
