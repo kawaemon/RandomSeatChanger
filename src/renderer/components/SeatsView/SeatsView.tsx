@@ -47,7 +47,7 @@ export function SeatsView(Property: SeatsViewProperty) {
   const GridStyle = Styles.SeatsView();
 
   return (
-    <>
+    <div>
       <h2>席イメージ</h2>
       <div className={TeacherDeskContainerStyle.root}>
         <Paper className={TeacherDeskStyle.root}>教卓</Paper>
@@ -74,6 +74,6 @@ export function SeatsView(Property: SeatsViewProperty) {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }

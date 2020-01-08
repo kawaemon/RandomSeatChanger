@@ -14,14 +14,15 @@ function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
     title: "席替え",
-    minWidth: 908,
-    minHeight: 550,
-    width: 910,
-    height: 600
+    minWidth: 1000,
+    minHeight: 680,
+    width: 1000,
+    height: 680,
+    titleBarStyle: "hidden"
   });
 
   if (isDevelopment) {
-    window.webContents.openDevTools();
+    // window.webContents.openDevTools();
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
   } else {
     window.loadURL(

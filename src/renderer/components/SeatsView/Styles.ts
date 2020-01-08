@@ -11,10 +11,12 @@ export const SeatPanelStyle = makeStyles({
     height: "5vh",
     fontSize: "2.5vmin",
     textAlign: "center",
-    marginBottom: "0.3vh",
-    marginTop: "0.3vh",
-    marginLeft: "0.3vw",
-    marginRight: "0.3vw"
+    marginBottom: "0.4vh",
+    marginTop: "0.4vh",
+    marginLeft: "0.4vw",
+    marginRight: "0.4vw",
+    border:"1px solid #4153AF",
+    boxShadow: "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12), inset 0 0 1px #4153AF"
   },
   invisible: {
     width: "5vw",
@@ -44,7 +46,9 @@ export const TeacherDesk = makeStyles({
     fontSize: "2.5vmin",
     alignItems: "center",
     justifyContent: "center",
-    display: "flex"
+    display: "flex",
+    border:"1px solid #bbb",
+    color:"#888"
   }
 });
 

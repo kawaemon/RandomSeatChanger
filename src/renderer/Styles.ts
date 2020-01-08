@@ -7,16 +7,19 @@ export const MainPaperStyle = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       //padding: theme.spacing(3, 2),
-      width: "45vw",
-      height: "90vh"
+      width: "43vw",
+      height: "92vh",
+      padding: "0.5vh 2vw",
+      position: "relative"
     }
   })
 );
 
 export const BodyStyle: CSS.Properties = {
-  width: "99vw",
+  width: "98vw",
   height: "100vh",
   display: "flex",
   justifyContent: "center",
-  alignItems: "center"
+  alignItems: "center",
+  margin: "0 auto"
 };
