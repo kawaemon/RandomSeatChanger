@@ -15,7 +15,8 @@ function SeatPanel(Property: SeatPanelProperty) {
   const Style = Styles.SeatPanelStyle();
   return (
     <Paper
-      className={Property.isEnabled ? Style.visible : Style.invisible}
+      className={Style.visible}
+      style={Property.isEnabled ? {} : { opacity: 0 }}
       onClick={e => {
         Property.onClick(Property.ID);
       }}

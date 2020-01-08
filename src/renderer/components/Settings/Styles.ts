@@ -1,13 +1,21 @@
 "use strict";
 
 import { makeStyles } from "@material-ui/core/styles";
+import CSS from "csstype";
+
+/*
+
+Material-uiのバグか知らんけど、ElectronBuilderでパッケージすると
+何故かSliderだけスタイルの優先順位が逆になって、widthが上書きされる。
+
+*/
+export const sliderStyle: CSS.Properties = {
+  marginTop: "0.4vw",
+  width: "28vw",
+  ["WebkitAppRegion" as any]: "none"
+};
 
 export const Styles = makeStyles({
-  slider: {
-    marginTop: "0.4vw",
-    width: "28vw",
-    WebkitAppRegion: "none"
-  },
   sliderInput: {
     width: "5vw",
     fontSize: "1.3vw"
@@ -60,6 +68,7 @@ export const Styles = makeStyles({
     //
     // ListEntryのWidth,Heightは、<FixedSizeGrid>の引数に与えなければなりません
     // 変更する時はそちらを変更してください。
+    //
     //
   },
   restoreButton: {

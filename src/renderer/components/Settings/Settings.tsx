@@ -54,11 +54,11 @@ export function Settings(Property: SettingsProps) {
           <div className={styles.sliderText}>縦に並ぶ数</div>
           <div>
             <Slider
-              className={styles.slider}
+              style={Styles.sliderStyle}
               marks
               step={1}
               min={1}
-              max={13}
+              max={12}
               defaultValue={5}
               value={height}
               onChange={(s, v) => {
@@ -87,7 +87,7 @@ export function Settings(Property: SettingsProps) {
           <div className={styles.sliderText}>横に並ぶ数</div>
           <div>
             <Slider
-              className={styles.slider}
+              style={Styles.sliderStyle}
               marks
               step={1}
               min={1}
