@@ -1,12 +1,13 @@
 {
   "name": "random-seat-changer",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "scripts": {
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
+    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
+    "dist:publish": "yarn dist --mac --win --linux -p always"
   },
   "dependencies": {
     "source-map-support": "^0.5.12"
@@ -23,6 +24,8 @@
     "css-loader": "^3.2.1",
     "electron": "5.0.6",
     "electron-builder": "^21.2.0",
+    "electron-log": "^4.0.2",
+    "electron-updater": "^4.2.0",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
     "prettier": "^1.19.1",
@@ -36,5 +39,38 @@
     "renderer": {
       "webpackConfig": "webpack.renderer.additions.js"
     }
+  },
+  "build": {
+    "win": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": "x64"
+        }
+      ]
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": "x64"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "tar.gz",
+          "arch": "x64"
+        }
+      ]
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "kawaemon",
+        "repo": "RandomSeatChanger"
+      }
+    ]
   }
 }
