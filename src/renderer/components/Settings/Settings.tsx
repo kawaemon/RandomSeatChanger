@@ -348,9 +348,16 @@ function ForceFrontListEntryProvider(
           onMouseEnter={e => setHovered(true)}
           onMouseLeave={e => setHovered(false)}
         >
-          <div style={{ display: "flex", alignItems: "flex-start" }}>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between"
+            }}
+          >
             <div>{`${CurrentList[arrayIndex]}番`}</div>
-            <small style={{ margin: "0 0 0 11vw" }}>
+            <small style={{ margin: "0 2vw 0 0 " }}>
               <DeleteIcon color={isHovered ? "secondary" : "disabled"} />
             </small>
           </div>
