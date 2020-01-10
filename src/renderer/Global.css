@@ -4,8 +4,6 @@
     format("opentype");
 }
 html {
-  -webkit-app-region: drag;
-  -webkit-user-select: none;
   margin: 0;
   width: 100%;
 }

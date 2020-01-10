@@ -157,6 +157,7 @@ function App() {
             <SettingsComponent.Settings
               onWidthChange={w => sizeChangeHandler(true, w, seats, setSeats)}
               onHeightChange={h => sizeChangeHandler(false, h, seats, setSeats)}
+              getSeats={() => seats.array}
               onResetSeats={() =>
                 setSeats({
                   width: seats.width,

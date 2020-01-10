@@ -3,6 +3,10 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import { format as formatUrl } from "url";
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS
+} from "electron-devtools-installer";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -17,12 +21,11 @@ function createMainWindow() {
     minWidth: 1000,
     minHeight: 680,
     width: 1000,
-    height: 680,
-    titleBarStyle: "hidden"
+    height: 680
   });
 
   if (isDevelopment) {
-    // window.webContents.openDevTools();
+    window.webContents.openDevTools();
     window.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
   } else {
     window.loadURL(
@@ -44,6 +47,10 @@ function createMainWindow() {
       window.focus();
     });
   });
+
+  installExtension([REDUX_DEVTOOLS, REACT_DEVELOPER_TOOLS])
+    .then(name => console.log(name))
+    .catch(err => console.log(err));
 
   return window;
 }

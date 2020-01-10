@@ -6,6 +6,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { useState } from "react";
 import { FixedSizeGrid, GridChildComponentProps } from "react-window";
 import { vw, vh } from "../../utils/SizeCalcurator";
+import * as SeatView from "../SeatsView/SeatsView";
 
 import {
   Slider,
@@ -16,10 +17,23 @@ import {
   Checkbox
 } from "@material-ui/core";
 
+enum LimitState {
+  OK,
+  EQUAL,
+  NG
+}
+
+namespace LimitState {
+  export function isAddToListPermitted(l: LimitState): boolean {
+    return l == LimitState.EQUAL || l == LimitState.NG;
+  }
+}
+
 export type SettingsProps = {
   onWidthChange: (newWidth: number) => void; //横数の変更のときに呼ばれる関数
   onHeightChange: (newHeight: number) => void; //縦数の変更のときに呼ばれる関数
   onResetSeats: () => void; //「削除した席を復元」ボタンが押された時に呼ばれる関数
+  getSeats: () => SeatView.Seat[];
   onExecute: (
     isForceFrontFuntcionEnabled: boolean,
     ForceFrontList: number[],
@@ -36,11 +50,13 @@ export function Settings(Property: SettingsProps) {
   const [ForceFrontList, setForceFrontList] = useState<number[]>([]); //強制的に前列に来る人の出席番号リスト
   const [ForceFrontListInputValue, setForceFrontListInputValue] = useState(""); //「出席番号」入力欄に書かれた値
   const [ForceFrontRangeInputValue, setForceFrontRangeInputValue] = useState(
-    ""
+    "2"
   ); //「列」入力欄に書かれた値
   const [isFrontInputError, setFrontInputError] = useState(false); //「出席番号」入力欄がエラーかどうか
-  const [isFrontListLimitExceeded, setFrontListLimitExceeded] = useState(false);
-  const [isRangeInputError, setRangeInputError] = useState(true); ///「列」入力欄がエラーかどうか
+  const [isFrontListLimitExceeded, setFrontListLimitExceeded] = useState<
+    LimitState
+  >(LimitState.OK);
+  const [isRangeInputError, setRangeInputError] = useState(false); ///「列」入力欄がエラーかどうか
   const [isForceFrontFunctionEnabled, setForceFrontFunctionEnabled] = useState(
     true
   ); //強制的に... の左のチェックボックスが有効かどうか（そもそも前列に特定の人を来させる機能を有効にするか無効にするか）
@@ -96,6 +112,15 @@ export function Settings(Property: SettingsProps) {
               value={width}
               onChange={(s, v) => {
                 const i = v as number;
+                console.log(i);
+                setFrontListLimitExceeded(
+                  CheckForceListLimitExceded(
+                    Property.getSeats(),
+                    ForceFrontList,
+                    i,
+                    parseInt(ForceFrontRangeInputValue)
+                  )
+                );
                 setWidth(i);
                 Property.onWidthChange(i);
               }}
@@ -109,6 +134,14 @@ export function Settings(Property: SettingsProps) {
                 if (e.target.value === "") return;
                 let i = parseInt(e.target.value);
                 if (i > 13) i = 13;
+                setFrontListLimitExceeded(
+                  CheckForceListLimitExceded(
+                    Property.getSeats(),
+                    ForceFrontList,
+                    width,
+                    parseInt(ForceFrontRangeInputValue)
+                  )
+                );
                 setWidth(i);
                 Property.onWidthChange(i);
               }}
@@ -158,10 +191,23 @@ export function Settings(Property: SettingsProps) {
               } else {
                 setRangeInputError(false);
               }
-              const x: number = parseInt(e.target.value);
-              if (x <= 0) setForceFrontRangeInputValue("1");
-              else if (x > height)
+              let x: number = parseInt(e.target.value);
+              if (x <= 0) {
+                setForceFrontRangeInputValue("1");
+                x = 1;
+              } else if (x > height) {
                 setForceFrontRangeInputValue(height.toString());
+                x = height;
+              }
+
+              setFrontListLimitExceeded(
+                CheckForceListLimitExceded(
+                  Property.getSeats(),
+                  ForceFrontList,
+                  width,
+                  x
+                )
+              );
             } catch (e) {}
           }}
         />
@@ -169,7 +215,7 @@ export function Settings(Property: SettingsProps) {
         <Paper className={`${styles.forceFrontListPaper} ${styles.fixedSize}`}>
           <FixedSizeGrid
             columnCount={2}
-            rowCount={ForceFrontList.length / 2 + 1}
+            rowCount={Object.keys(ForceFrontList).length / 2 + 1}
             width={vw(40)}
             height={vh(30)}
             columnWidth={vw(20)}
@@ -183,6 +229,14 @@ export function Settings(Property: SettingsProps) {
                 const NewArray = ForceFrontList.slice(); //配列を複製
                 NewArray.splice(n, 1); //クリックされたものを取り除く
                 setForceFrontList(NewArray); //反映
+                setFrontListLimitExceeded(
+                  CheckForceListLimitExceded(
+                    Property.getSeats(),
+                    NewArray,
+                    width,
+                    parseInt(ForceFrontRangeInputValue)
+                  )
+                );
               }
             )}
           </FixedSizeGrid>
@@ -219,7 +273,7 @@ export function Settings(Property: SettingsProps) {
           <Button
             disabled={
               isFrontInputError ||
-              isFrontListLimitExceeded ||
+              LimitState.isAddToListPermitted(isFrontListLimitExceeded) ||
               !isForceFrontFunctionEnabled
             }
             color="primary"
@@ -227,18 +281,25 @@ export function Settings(Property: SettingsProps) {
             onClick={e => {
               setForceFrontListInputValue("");
               setFrontInputError(true);
+              let newArray: number[];
               setForceFrontList(
-                ForceFrontList.concat(parseInt(ForceFrontListInputValue)).sort(
-                  (a, b) => a - b
-                )
+                (newArray = ForceFrontList.concat(
+                  parseInt(ForceFrontListInputValue)
+                ).sort((a, b) => a - b))
               );
               setFrontListLimitExceeded(
-                ForceFrontList.length >=
-                  parseInt(ForceFrontRangeInputValue) * width
+                CheckForceListLimitExceded(
+                  Property.getSeats(),
+                  newArray,
+                  width,
+                  parseInt(ForceFrontRangeInputValue)
+                )
               );
             }}
           >
-            {isFrontListLimitExceeded ? "数が多すぎます。" : "リストに追加"}
+            {LimitState.isAddToListPermitted(isFrontListLimitExceeded)
+              ? "数が多すぎます。"
+              : "リストに追加"}
           </Button>
         </div>
       </div>
@@ -246,9 +307,11 @@ export function Settings(Property: SettingsProps) {
         variant="contained"
         color="secondary"
         disabled={
-          isForceFrontFunctionEnabled
-            ? !(!(ForceFrontList.length <= 0) && !isRangeInputError)
-            : false
+          (isForceFrontFunctionEnabled
+            ? !(
+                !(Object.keys(ForceFrontList).length <= 0) && !isRangeInputError
+              )
+            : false) || isFrontListLimitExceeded == LimitState.NG
         }
         className={styles.executeButton}
         onClick={e => {
@@ -275,7 +338,7 @@ function ForceFrontListEntryProvider(
     const [isHovered, setHovered] = useState(false);
     const { rowIndex, columnIndex, style } = props;
     const arrayIndex = rowIndex * 2 + columnIndex;
-    if (CurrentList.length > arrayIndex) {
+    if (Object.keys(CurrentList).length > arrayIndex) {
       return (
         <ListItem
           button
@@ -297,4 +360,24 @@ function ForceFrontListEntryProvider(
       return <div></div>;
     }
   };
+}
+
+function CheckForceListLimitExceded(
+  CurrentSeatsList: SeatView.Seat[],
+  ForceForwardList: number[],
+  width: number,
+  ForceForwardRange: number
+): LimitState {
+  let charge: number = 0;
+  for (let i = 0; i < width * ForceForwardRange; i++) {
+    if (CurrentSeatsList[i].isEnabled) ++charge;
+  }
+
+  if (charge > Object.keys(ForceForwardList).length) {
+    return LimitState.OK;
+  } else if (charge == Object.keys(ForceForwardList).length) {
+    return LimitState.EQUAL;
+  } else {
+    return LimitState.NG;
+  }
 }
