@@ -5,5 +5,8 @@ module.exports = {
     alias: {
       "@static": path.resolve(__dirname, "static")
     }
+  },
+  node: {
+    __dirname: true
   }
 };

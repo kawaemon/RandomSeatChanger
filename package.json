@@ -1,13 +1,18 @@
 {
   "name": "random-seat-changer",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "license": "MIT",
+  "author": "kawaemon <kawaemon@kawaemon.dev> (https://github.com/kawaemon/)",
+  "contributors": [
+    "unios103 (https://github.com/unios103)"
+  ],
   "scripts": {
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
+    "dist:full": "yarn dist -wml",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
-    "dist:publish": "yarn dist --mac --win --linux -p always"
+    "dist:publish": "yarn dist -wml -p always"
   },
   "dependencies": {
     "source-map-support": "^0.5.12"
@@ -18,10 +23,12 @@
     "@babel/preset-react": "^7.7.0",
     "@material-ui/core": "^4.6.1",
     "@material-ui/icons": "^4.5.1",
+    "@types/bytes": "^3.1.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "@types/react-window": "^1.8.1",
+    "bytes": "^3.1.0",
     "css-loader": "^3.2.1",
     "electron": "5.0.6",
     "electron-builder": "^21.2.0",
@@ -43,29 +50,28 @@
     }
   },
   "build": {
+    "productName": "席替えソフト",
     "win": {
       "target": [
-        {
-          "target": "zip",
-          "arch": "x64"
-        }
+        "zip",
+        "nsis"
       ]
     },
     "mac": {
       "target": [
-        {
-          "target": "zip",
-          "arch": "x64"
-        }
+        "zip"
       ]
     },
     "linux": {
       "target": [
-        {
-          "target": "tar.gz",
-          "arch": "x64"
-        }
+        "tar.xz"
       ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": false,
+      "displayLanguageSelector": true
     },
     "publish": [
       {
