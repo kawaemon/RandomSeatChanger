@@ -14,7 +14,7 @@ app.commandLine.appendSwitch("lang", "ja");
 function createMainWindow() {
   const window = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
-    title: `席替えソフト v${app.getVersion()}`,
+    title: `席替えソフト v${require("../../package.json").version}`,
     minWidth: 1000,
     minHeight: 680,
     width: 1000,

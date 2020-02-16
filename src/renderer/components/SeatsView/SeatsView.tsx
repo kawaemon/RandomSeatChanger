@@ -1,76 +1,49 @@
-"use strict";
-
 import * as React from "react";
 import * as Styles from "./Styles";
 import { Paper } from "@material-ui/core";
-
-type SeatPanelProperty = {
-  isEnabled: boolean; //表示されてるかされてないか
-  showedNumber: number; //表示される番号
-  ID: number; //固有の数字
-  onClick: (ID: number) => void; //クリックされた時（消される時）
-};
-
-function SeatPanel(Property: SeatPanelProperty) {
-  const Style = Styles.SeatPanelStyle();
-  return (
-    <Paper
-      className={Style.visible}
-      style={Property.isEnabled ? {} : { opacity: 0 }}
-      onClick={e => {
-        Property.onClick(Property.ID);
-      }}
-    >
-      <div>{Property.showedNumber}</div>
-    </Paper>
-  );
-}
-
-export type Seat = {
-  isEnabled: boolean;
-  ID: number;
-  showedNumber: number;
-};
+import { SeatPanel } from "./SeatPanel";
+import { State } from "../../reducer/States";
+import { Action } from "../../reducer/Actions";
 
 export type SeatsViewProperty = {
-  width: number;
-  height: number;
-  list: Seat[];
-  onSeatClick: (ID: number) => void;
+  State: State;
+  Dispatch: (a: Action) => void;
 };
+
+function GenSeatPanelElement(Property: SeatsViewProperty, ID: number) {
+  return (
+    <SeatPanel
+      key={ID}
+      ID={ID}
+      isEnabled={Property.State.SeatArray[ID].isEnabled}
+      onClick={n => Property.Dispatch({ type: "DeleteSeat", ID: n })}
+      showedNumber={Property.State.SeatArray[ID].showedNumber}
+    />
+  );
+}
 
 // 構造はだいたいこんな感じ
 // https://imgur.com/a/9RSolAE
 
 export function SeatsView(Property: SeatsViewProperty) {
-  const TeacherDeskStyle = Styles.TeacherDesk();
-  const TeacherDeskContainerStyle = Styles.TeacherDeskContainer();
+  const TeacherDeskStyle = Styles.TeacherDesk().root;
+  const TeacherDeskContainerStyle = Styles.TeacherDeskContainer().root;
   const GridStyle = Styles.SeatsView();
 
   return (
     <div>
       <h2>席イメージ</h2>
-      <div className={TeacherDeskContainerStyle.root}>
-        <Paper className={TeacherDeskStyle.root}>教卓</Paper>
+      <div className={TeacherDeskContainerStyle}>
+        <Paper className={TeacherDeskStyle}>教卓</Paper>
       </div>
 
       <div className={GridStyle.verticalContainer}>
-        {Array.from(Array(Property.height).keys()).map(n => {
+        {[...Array(Property.State.SeatHeight).keys()].map(n => {
           return (
             <div className={GridStyle.horizontalContainer} key={n}>
-              {Array.from(Array(Property.width).keys()).map(p => {
-                return (
-                  <SeatPanel
-                    key={n * Property.width + p}
-                    ID={n * Property.width + p}
-                    isEnabled={Property.list[n * Property.width + p].isEnabled}
-                    onClick={Property.onSeatClick}
-                    showedNumber={
-                      Property.list[n * Property.width + p].showedNumber
-                    }
-                  />
-                );
-              })}
+              {[...Array(Property.State.SeatWidth).keys()].map(p =>
+                GenSeatPanelElement(Property, n * Property.State.SeatWidth + p)
+              )}
             </div>
           );
         })}

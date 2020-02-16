@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 // 参照
 // https://imgur.com/a/9RSolAE
 
-export const SeatPanelStyle = makeStyles({
-  visible: {
+export const SeatPanelStyleGenerator = makeStyles({
+  style: {
     width: "5vw",
     height: "5vh",
     fontSize: "2.5vmin",
