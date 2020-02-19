@@ -20,6 +20,7 @@ jobs:
     
     - name: Install dependencies
       run: |
+        sudo dpkg --add-architecture i386
         sudo apt update -y
         sudo apt install wine-stable wine32 -y
         yarn --frozen-lockfile
