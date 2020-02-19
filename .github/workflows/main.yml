@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update -y
-        sudo apt install wine-stable -y
+        sudo apt install wine-stable wine32 -y
         yarn --frozen-lockfile
       
     - name: Build packages and upload to Github releases
