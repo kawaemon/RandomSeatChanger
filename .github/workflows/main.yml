@@ -19,7 +19,10 @@ jobs:
         node-version: 13.x
     
     - name: Install dependencies
-      run: yarn --frozen-lockfile
+      run: |
+        sudo apt update -y
+        sudo apt install wine-stable -y
+        yarn --frozen-lockfile
       
     - name: Build packages and upload to Github releases
       run: yarn dist:publish
