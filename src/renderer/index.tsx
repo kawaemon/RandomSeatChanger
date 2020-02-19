@@ -5,32 +5,52 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Button, Grid } from "@material-ui/core/";
+import { Grid, Paper } from "@material-ui/core/";
 
-import Entries from "./components/Entries/Entries";
-import Seats from "./components/Seats/Seats";
-import Settings from "./components/Settings/Settings";
+import * as SeatComponent from "./components/SeatsView/SeatsView";
+import * as SettingsComponent from "./components/Settings/Settings";
 
-require("./styles.css");
+import * as Styles from "./Styles";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        <Grid
-          container
-          direction="row"
-          justify="center"
-          alignItems="center"
-          spacing={3}
-        >
-          <Entries />
-          <Seats />
-          <Settings />
+import { Reducer } from "./reducer/Reducer";
+import { InitialState } from "./reducer/States";
+
+require("./Global.css");
+
+function App() {
+  const [State, Dispatch] = React.useReducer(Reducer, InitialState);
+
+  const MainPaperStyle = Styles.MainPaperStyle();
+
+  return (
+    <div style={Styles.BodyStyle}>
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        spacing={2}
+      >
+        <Grid item>
+          <Paper className={MainPaperStyle.root}>
+            <SeatComponent.SeatsView Dispatch={Dispatch} State={State} />
+          </Paper>
         </Grid>
-      </div>
-    );
-  }
+        <Grid item>
+          <Paper className={MainPaperStyle.root}>
+            <SettingsComponent.Settings Dispatch={Dispatch} State={State} />
+          </Paper>
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
 
+//viewport settings
+let meta = document.createElement("meta");
+meta.name = "viewport";
+meta.content =
+  "width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1, user-scalable=no";
+
+document.head.appendChild(meta);
 ReactDOM.render(<App />, document.getElementById("app"));

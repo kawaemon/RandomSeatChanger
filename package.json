@@ -1,28 +1,46 @@
 {
   "name": "random-seat-changer",
-  "version": "0.0.1",
+  "version": "1.0.4",
   "license": "MIT",
+  "author": "kawaemon <kawaemon@kawaemon.dev> (https://github.com/kawaemon/)",
+  "contributors": [
+    "unios103 (https://github.com/unios103)"
+  ],
   "scripts": {
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
+    "dist:full": "yarn dist -wml",
+    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
+    "dist:publish": "yarn dist -wml -p always"
   },
   "dependencies": {
-    "@material-ui/core": "^4.6.1",
-    "@material-ui/icons": "^4.5.1",
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4",
     "source-map-support": "^0.5.12"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.0",
+    "@material-ui/core": "^4.6.1",
+    "@material-ui/icons": "^4.5.1",
+    "@types/bytes": "^3.1.0",
+    "@types/electron-devtools-installer": "^2.2.0",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-window": "^1.8.1",
+    "bytes": "^3.1.0",
+    "css-loader": "^3.2.1",
     "electron": "5.0.6",
-    "electron-builder": "^21.0.11",
+    "electron-builder": "^21.2.0",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-log": "^4.0.2",
+    "electron-updater": "^4.2.0",
     "electron-webpack": "^2.7.4",
     "electron-webpack-ts": "^3.2.0",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-window": "^1.8.5",
     "typescript": "^3.7.2",
     "webpack": "~4.35.3"
   },
@@ -30,5 +48,37 @@
     "renderer": {
       "webpackConfig": "webpack.renderer.additions.js"
     }
+  },
+  "build": {
+    "productName": "席替えソフト",
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": [
+        "tar.xz"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": false,
+      "displayLanguageSelector": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "kawaemon",
+        "repo": "RandomSeatChanger"
+      }
+    ]
   }
 }

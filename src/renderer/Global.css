@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "Noto Sans CJK JP Regular";
+  src: url("~@static/fonts/NotoSansCJKJP/NotoSansCJKjp-Regular.otf")
+    format("opentype");
+}
+html {
+  margin: 0;
+  width: 100%;
+}
+body {
+  font-family: "Noto Sans CJK JP Regular" !important;
+  margin: 0 auto;
+}
+div {
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2vw;
+}
+
+h3 {
+  font-size: 1.5vw;
+  transform: translateX(0.3vw);
+  margin: 0 0 0.8vh 0;
+}
