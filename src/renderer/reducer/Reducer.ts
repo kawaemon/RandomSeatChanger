@@ -74,7 +74,8 @@ export function Reducer(state: State, action: Action): State {
             isForceFrontFunctionEnabled: false,
             isAddToForceFrontListButtonEnabled: false,
             isForceFrontNumberInputError: false,
-            isForceFrontRangeInputError: false
+            isForceFrontRangeInputError: false,
+            CanExecute: true
           };
         }
       }
@@ -113,13 +114,17 @@ export function Reducer(state: State, action: Action): State {
 
     case "AddToForceFrontList":
       {
+        if (state.isForceFrontNumberInputError) return state;
         const List = state.ForceFrontList.slice();
         List.push(parseInt(state.ForceFrontNumberInput));
         Result = {
           ...state,
           ForceFrontList: List.sort((a, b) => a - b),
           isAddToForceFrontListButtonEnabled: false,
-          isForceFrontNumberInputError: true
+          isForceFrontNumberInputError: true,
+          ForceFrontNumberInput: action.isDispatchedByEnterKey
+            ? ""
+            : state.ForceFrontNumberInput
         };
       }
       break;

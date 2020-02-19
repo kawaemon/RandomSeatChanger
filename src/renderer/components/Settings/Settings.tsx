@@ -151,6 +151,14 @@ export function Settings(Property: SettingsProps) {
                   value: e.target.value
                 });
               }}
+              onKeyDown={e => {
+                if (e.key == "Enter") {
+                  Property.Dispatch({
+                    type: "AddToForceFrontList",
+                    isDispatchedByEnterKey: true
+                  });
+                }
+              }}
             />
             番
           </span>
@@ -159,7 +167,10 @@ export function Settings(Property: SettingsProps) {
             color="primary"
             variant="contained"
             onClick={e => {
-              Property.Dispatch({ type: "AddToForceFrontList" });
+              Property.Dispatch({
+                type: "AddToForceFrontList",
+                isDispatchedByEnterKey: false
+              });
             }}
           >
             {Property.State.AddToForceFrontListText}

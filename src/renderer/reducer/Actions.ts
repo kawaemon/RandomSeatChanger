@@ -18,8 +18,13 @@ type EditSeatAction = {
   ID: number;
 };
 
+type EnterAction = {
+  type: "AddToForceFrontList";
+  isDispatchedByEnterKey: boolean;
+};
+
 type NoArgAction = {
-  type: "RebuildSeatArray" | "AddToForceFrontList" | "Randomize";
+  type: "RebuildSeatArray" | "Randomize";
 };
 
 export type Action =
@@ -27,4 +32,5 @@ export type Action =
   | BooleanAction
   | StringAction
   | EditSeatAction
+  | EnterAction
   | NoArgAction;
