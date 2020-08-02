@@ -30,7 +30,7 @@
     "@types/react-window": "^1.8.2",
     "bytes": "^3.1.0",
     "css-loader": "^3.6.0",
-    "electron": "5.0.6",
+    "electron": "9.1.2",
     "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.4",
     "electron-log": "^4.2.2",
